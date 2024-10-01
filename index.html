@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="A safety filter framework for Imitation Learning policy using reachability analysis">
+  <meta name="keywords" content="RAIL, IL, SafetyFIlter">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAIL: Reachability-Aided Imitation Learning for Safe Policy Execution</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/rail.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://wonsuhkjung.wordpress.com/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://saferoboticslab.me.gatech.edu/research/parc/">
+            PARC
+          </a>
+          <!-- Add other research here -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- 
+      Author blocks
+-->
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">RAIL: Reachability-based Imitation Learning for Safe Policy Execution</h1>
+          <!-- Authors -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://wonsuhkjung.wordpress.com/">Wonsuhk Jung</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://dennisant.github.io/">Dennis Anthony</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://umishra.me/">Utkarsh Mishra</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/nadun-ranawaka-arachchige-87701b137/">Nadun Ranawaka</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://mbronars.github.io/">Matthew Bronars</a><sup>1</sup>,
+            </span>
+          </div>
+          <!-- Professors -->
+          <div class="is-size-5 publication-authors"> 
+            <span class="author-block">
+              <a href="https://faculty.cc.gatech.edu/~danfei/">Danfei Xu*</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.shreyaskousik.com/">Shreyas Kousik*</a><sup>1</sup>,
+          </div>
+
+          <div class="is-size-6 publication-authors">
+            <span class="author-block"><sup>1</sup>Georgia Institute of Technology</span>
+          </div>
+
+          <div class="is-size-8 publication-authors">
+            <span class="author-block"><sup></sup>* Co-advising authorship,</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <div id="preparation-box" class="preparation-box">The link is in preparation</div>
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2409.19190"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2409.19190"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=1n6ZLEODWE4"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies"
+                   class="external-link button is-normal is-rounded is-dark preparation-link">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code (Coming Soon)</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- teaser -->
+<!-- TODO: make teaser video for the RAIL-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" class="is-centered" autoplay muted loop playsinline width="65%" height="65%" style="display: block; margin: auto; ; margin-bottom: 20px;">
+        <source src="./static/videos/rail_teaser_speed.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle">
+        How do we bridge the gap between <em style="color:rgb(92, 152, 92)">what robots can do</em> and <em style="color:rgb(92, 152, 92)">what they can safely do </em>?
+        We introduce <span class = "dnerf"> RAIL </span>: a safety-filter framework for Imitation Learning (IL) policy leveraging reachability analysis to ensure robot safety while maximizing robot capability.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            End-to-end imitation learning (IL) has shown
+            great success in learning complex robot manipulation tasks.
+            However, there remains a need for practical safety methods to
+            justify widespread deployment. In particular, it is important
+            to certify that a system obeys hard constraints on unsafe
+            behavior in settings when it is unacceptable to design a tradeoff
+            between performance and safety via tuning the policy (i.e. soft
+            constraints). This leads to the question, how does enforcing hard
+            constraints impact the performance (meaning safely completing
+            tasks) of an IL policy? 
+          </p>
+          <p>
+            To answer this question, this paper builds
+            a reachability-based safety filter to enforce hard constraints
+            on IL, which we call Reachability-Aided Imitation Learning
+            (RAIL). Through evaluations with state-of-the-art IL policies
+            in mobile robots and manipulation tasks, we make two key
+            findings. First, the highest-performing policies are sometimes
+            only so because they frequently violate constraints, and sig-
+            nificantly lose performance under hard constraints. Second,
+            surprisingly, hard constraints on the lower-performing policies
+            can occasionally increase their ability to perform tasks safely.
+            Finally, hardware evaluation confirms the method can operate in real-time.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+          <video id="teaser" controls playsinline height="100%">
+                <source src="./static/videos/RAIL_3min.mp4"
+                        type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+<!-- Maze Example -->
+<!-- Placeholder for maze video carousel -->
+<!-- Fun Idea: can user select initial position, goal? -->
+<section class="section is-light is-small">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered"> What can RAIL do?</h2>
+      <div class="content mb-5">
+        <h2 class="title is-4"> (1) RAIL can safely reason in long-horizon</h2>
+        <p>          
+          In this <a href="https://robotics.farama.org/envs/maze/point_maze/"> PointMaze task</a>, the mobile robot must navigate to its goal in a maze while not colliding with walls.
+        </p>
+        <p>
+          We report the key metric, <b>Safe Success Rate</b>—the percentage of successful episodes with no safety violations, out of 100 experiments.
+          RAIL significantly increases safe success rate by combining long-horizon reasoning capability and safety guarantee respectively from IL policy and reachability analysis.
+        </p>
+      </div>
+      <!-- Insert table here -->
+      <table class="table is-fullwidth is-striped">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Success Rate</th>
+            <th>Safe Success Rate</th>
+            <th>Collision Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Diffusion Policy</td>
+            <td><b>100.00%</b></td>
+            <td>15.00%</td>
+            <td>5.66%</td>
+          </tr>
+          <tr>
+            <td>Safety-guided Diffusion Policy</td>
+            <td><b>100.00%</b></td>
+            <td>18.00%</td>
+            <td>4.85%</td>
+          </tr>
+          <tr>
+            <td>Model-based Planner</td>
+            <td>49.00%</td>
+            <td>49.00%</td>
+            <td><b>0.00%</b></td>
+          </tr>
+          <tr>
+            <td><b>Diffusion Policy + RAIL (Ours)</b></td>
+            <td>95.00%</td>
+            <td><b>95.00%</b></td>
+            <td><b>0.00%</b></td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item">
+          <div class="item-content">
+            <video poster="" id="steve" autoplay controls muted loop playsinline>
+              <source src="./static/videos/maze2D_large_sf.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline>
+            <source src="./static/videos/maze2D_large_diff.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline>
+            <source src="./static/videos/maze2D_large_sd.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline>
+            <source src="./static/videos/maze2D_large_back.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="content mb-5">
+        <p>
+          If the robot collides with a wall, the screen flashes in <b style = "color:red">red</b>.
+          For <b>Diffusion Policy + RAIL</b>, a <b style = "color:rgb(90, 135, 21)">green circle</b> appears when safety intervention happens
+          and <b style = "color: blue">blue circle</b> when it operates without interventon.
+          Video speed: 1x
+        </p>
+      </div>
+    </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-4">(2) RAIL can discover safe successful mode of IL policy</h2>
+    <p style="margin-bottom: 20px;">          
+      In this <a href="https://robosuite.ai/docs/modules/environments.html#pick-and-place"> PickPlace task</a>, the single-arm manipulator must pick the can and place in the target bin.
+      Safety means avoiding collisions between the robot and the environment while obeying joint position and velocity constraints. 
+      The gripper-can collision is ignored during picking, but collisions between the can and the environment are considered unsafe during placing.
+    </p>
+    
+    <p style="margin-bottom: 20px;">
+    RAIL increases Safe Success Rate by <b>9.25%</b> over <a href="https://github.com/real-stanford/diffusion_policy">Diffusion Policy</a> and <b>2.00%</b> over <a href="https://github.com/Shaka-Labs/ACT">Action Chunking Transformer</a>, by finding safe, successful IL policy modes.
+    We illustrate some notable behaviors of RAIL:
+    </p>
+
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-5">Turning gripper</h2>
+          <p>
+            RAIL adjusts the orientation of the gripper to descend and safely pick up the can.
+          </p>
+          <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/turn_gripper.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+
+      <div class="column">
+        <h2 class="title is-5">Non-prehensile Maneuver</h2>        
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              RAIL repositions the can to avoid collisions between the bin and gripper during pick-up.
+            </p>
+            <video id="matting-video" controls playsinline autoplay muted loop height="100%">
+              <source src="./static/videos/nonprehensile.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <h2 class="title is-5">Path correction</h2>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              RAIL corrects the placing path to prevent collisions between the can and the cereal box.
+            </p>
+            <video id="matting-video" controls playsinline autoplay muted loop height="100%">
+              <source src="./static/videos/pathcorrection.mp4"
+                      type="video/mp4">
+            </video>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="item item-fullbody">
+      <video poster="" id="fullbody" autoplay controls muted loop playsinline width = "70%" height = "70%" style="display: block; margin: auto; ; margin-bottom: 20px;">
+        <source src="./static/videos/franka_sim_cmp.mp4"
+                type="video/mp4">
+      </video>
+    </div>
+
+    <div class="content mb-5">
+      <p> 
+        If safety is violated, the screen flashes in <b style = "color:red">red</b>.
+        For <b>Diffusion Policy + RAIL</b>, a <b style = "color:rgb(90, 135, 21)">green circle</b> appears when safety intervention happens
+        and <b style = "color: blue">blue circle</b> when it operates without interventon.
+        Video speed: <b>(Left)</b> 5x <b>(Right)</b> 2.5x when notable behaviors are observed, 10x otherwise
+      </p>
+    </div>
+
+    <!--/ Matting. -->
+
+    <!-- Animation. -->
+    <!-- <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 is-centered">2. RAIL discovers safe successful mode of Imitation Learning policy</h2>
+
+        <h3 class="title is-4">Interpolating states</h3>
+        <div class="content has-text-justified">
+          <p>
+            We can also animate the scene by interpolating the deformation latent codes of two input
+            frames. Use the slider here to linearly interpolate between the left frame and the right
+            frame.
+          </p>
+        </div>
+        <div class="columns is-vcentered interpolation-panel">
+          <div class="column is-3 has-text-centered">
+            <img src="./static/images/interpolate_start.jpg"
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/>
+            <p>Start Frame</p>
+          </div>
+          <div class="column interpolation-video-column">
+            <div id="interpolation-image-wrapper">
+              Loading...
+            </div>
+            <input class="slider is-fullwidth is-large is-info"
+                   id="interpolation-slider"
+                   step="1" min="0" max="100" value="0" type="range">
+          </div>
+          <div class="column is-3 has-text-centered">
+            <img src="./static/images/interpolate_end.jpg"
+                 class="interpolation-image"
+                 alt="Interpolation end reference image."/>
+            <p class="is-bold">End Frame</p>
+          </div>
+        </div>
+        <br/>
+
+        <h3 class="title is-4">Re-rendering the input video</h3>
+        <div class="content has-text-justified">
+          <p>
+            Using <span class="dnerf">Nerfies</span>, you can re-render a video from a novel
+            viewpoint such as a stabilized camera by playing back the training deformations.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <video id="replay-video"
+                 controls
+                 muted
+                 preload
+                 playsinline
+                 width="75%">
+            <source src="./static/videos/replay.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Animation. -->
+
+
+    <!-- Concurrent Work. -->
+    <!-- <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Links</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Concurrent Work. -->
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-4">(3) RAIL can run real-time</h2>
+    <p> On hardware, RAIL is able to verify safety and compute the plan in average 0.42 seconds.</p>
+  </div>
+</section>
+
+<!-- Placeholder for bibliography -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{jung2024rail,
+  author    = {Jung, Wonsuhk and Anthony, Dennis and Mishra, Utkarsh and Arachchige, Nadun and Bronars, Matthew, and Xu, Danfei and Kousik, Shreyas},
+  title     = {RAIL: Reachability-Aided Imitation Learning for Safe Policy Execution},
+  journal   = {arXiv preprint arXiv:2409.19190},
+  year      = {2024},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is based on the <a href = "https://nerfies.github.io/"> Nerfies </a> website template, which is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
